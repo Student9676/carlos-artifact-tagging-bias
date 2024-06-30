@@ -31,6 +31,6 @@ df = pd.DataFrame({"Text": text,
 				   "Offensive words found": found_offensive_words}, index=[datetime.now()])
 
 if file_exists("hurtlex_test_output.csv"):
-	df.to_csv('./hurtlex_test_output.csv', mode='a', index=True, header=False, sep=",")
+	df.to_csv('./bias_algos/hurtlex_test_output.csv', mode='a', index=True, header=False, sep=",")
 else:
-	df.to_csv('./hurtlex_test_output.csv', mode='w', index=True, index_label="Time", header=True, sep=",")
+	df.to_csv('./bias_algos/hurtlex_test_output.csv', mode='w', index=True, index_label="Time", header=True, sep=",")

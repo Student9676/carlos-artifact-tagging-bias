@@ -51,6 +51,6 @@ for attribute in attribute_dict:
 
 df = pd.DataFrame(response_dict, index=[datetime.now()])
 if file_exists("perspectiveAPI_test_output.csv"):
-	df.to_csv('./perspectiveAPI_test_output.csv', mode='a', index=True, header=False, sep=",")
+	df.to_csv('./bias_algos/perspectiveAPI_test_output.csv', mode='a', index=True, header=False, sep=",")
 else:
-	df.to_csv('./perspectiveAPI_test_output.csv', mode='w', index=True, index_label="Time", header=True, sep=",")
+	df.to_csv('./bias_algos/perspectiveAPI_test_output.csv', mode='w', index=True, index_label="Time", header=True, sep=",")

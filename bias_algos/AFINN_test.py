@@ -10,7 +10,7 @@ def file_exists(filename):
 
 afinn = Afinn()
 
-text = "I love the hate"
+text = "I love the"
 
 score = afinn.score(text)
 
@@ -19,6 +19,6 @@ df = pd.DataFrame({"Text": text,
                    index=[datetime.now()])
 
 if file_exists("AFINN_test_output.csv"):
-	df.to_csv('./AFINN_test_output.csv', mode='a', index=True, header=False, sep=",")
+	df.to_csv('./bias_algos/AFINN_test_output.csv', mode='a', index=True, header=False, sep=",")
 else:
-	df.to_csv('./AFINN_test_output.csv', mode='w', index=True, index_label="Time", header=True, sep=",")
+	df.to_csv('./bias_algos/AFINN_test_output.csv', mode='w', index=True, index_label="Time", header=True, sep=",")
