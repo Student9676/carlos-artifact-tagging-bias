@@ -2,7 +2,7 @@ import pandas as pd
 from textblob import TextBlob
 
 # Load the Excel file
-file_path = 'C:/Users/LC180/Desktop/AI.XPERIENCE/ModifiedResults.xlsx'
+file_path = './carlos_data/objs_w_sentiment_analysis.xlsx'
 df = pd.read_excel(file_path)
 
 # Extract the target text column
@@ -28,7 +28,7 @@ worth_analysis = df[(df['Sentiment_TextBlob'].abs() > sentiment_threshold) | (df
 print(worth_analysis.head())
 
 # Save the filtered results to a new Excel file
-output_file_path = 'C:/Users/LC180/Desktop/AI.XPERIENCE/Worth_Analysis_TextEntries.xlsx'
+output_file_path = './carlos_data/extracted_objs_w_sentiment_analysis.xlsx'
 worth_analysis.to_excel(output_file_path, index=False)
 
 print(f"Worth analysis text entries saved to {output_file_path}")

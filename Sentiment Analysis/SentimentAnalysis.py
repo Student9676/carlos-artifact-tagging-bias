@@ -2,7 +2,7 @@ import pandas as pd
 from textblob import TextBlob
 
 # Read the Excel file
-file_path = 'C:/Users/LC180/Desktop/AI.XPERIENCE/Cleaned_data1.xlsx'
+file_path = './carlos_data/objs_w_title_n_desc.xlsx'
 df = pd.read_excel(file_path)
 
 # Extract the target text column
@@ -20,7 +20,7 @@ df[['Sentiment_TextBlob', 'Subjectivity_TextBlob']] = target_texts.apply(lambda 
 print(df.head())
 
 # Save the results to a new Excel file
-output_file_path = 'C:/Users/LC180/Desktop/AI.XPERIENCE/ModifiedResults.xlsx'
+output_file_path = './carlos_data/objs_w_sentiment_analysis.xlsx'
 df.to_excel(output_file_path, index=False)
 
 print(f"Sentiment analysis results saved to {output_file_path}")
