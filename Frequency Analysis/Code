@@ -13,7 +13,7 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
 
-# Load your dataset
+# Load dataset
 df = pd.read_csv('/Users/Sophia/Desktop/Datasets/AIXperience/clean_data.csv')
 
 # Select the column with descriptions
@@ -45,3 +45,134 @@ plt.figure(figsize=(10, 5))
 plt.imshow(wordcloud, interpolation='bilinear')
 plt.axis('off')
 plt.show()
+
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+from collections import Counter
+import pandas as pd
+import configparser
+import subprocess
+import json
+
+# Download Vale
+!pip install vale
+import vale
+
+df = pd.read_csv('/Users/Sophia/Desktop/Datasets/AIXperience/clean_data.csv')
+
+from collections import Counter
+from nltk.tokenize import word_tokenize
+
+# DataFrame setup:
+data = {
+    'TextEntry': [
+        "Sample text description 1.",
+        "Another description here.",
+        float('nan'),  # Example NaN entry
+        "Yet another description."
+    ]
+}
+df = pd.DataFrame(data)
+
+# Preprocess the text
+def preprocess_text(text):
+    if pd.isnull(text):  # Check for NaN
+        return []  # Return an empty list if NaN
+    tokens = word_tokenize(text)
+    tokens = [word.lower() for word in tokens if word.isalpha()]
+    stop_words = set(stopwords.words('english'))
+    tokens = [word for word in tokens if word not in stop_words]
+    stemmer = PorterStemmer()
+    tokens = [stemmer.stem(word) for word in tokens]
+    return tokens
+
+# Calculate word frequencies
+token_counter = Counter()
+for description in df['TextEntry']: 
+    tokens = preprocess_text(description)
+    token_counter.update(tokens)
+
+# Print most common tokens and their frequencies
+print("Most common tokens:")
+print(token_counter.most_common(45))
+
+# Preprocess text with subjective terms
+def preprocess_text(text, subjective_terms):
+    if isinstance(text, str):  # Check if text is a string
+        # Tokenization
+        tokens = nltk.word_tokenize(text)
+        
+        # Normalization and remove punctuation
+        tokens = [word.lower() for word in tokens if word.isalpha()]
+        
+        # Remove stop words
+        stop_words = set(stopwords.words('english'))
+        tokens = [word for word in tokens if word not in stop_words]
+        
+        # Stemming
+        stemmer = PorterStemmer()
+        tokens = [stemmer.stem(word) for word in tokens]
+        
+        # Filter out subjective terms
+        tokens = [word for word in tokens if word in subjective_terms]
+        
+        return tokens
+    else:
+        return []  # Return an empty list if text is NaN or not a string
+
+# Read Vale Linter style guides from .vale.ini file
+config = configparser.ConfigParser()
+config.read('/Users/Sophia/Desktop/Datasets/AiXperience.vale.ini')
+config_path = ('/Users/Sophia/Desktop/Datasets/AiXperience.vale.ini')  
+
+import pandas as pd
+from collections import Counter
+import subprocess
+import json
+
+# Function to preprocess text and detect subjective terms using Vale
+def preprocess_text_with_vale(text):
+    if isinstance(text, str):  # Check if text is a string
+        # Write text to a temporary file (Vale works with files)
+        with open('temp.txt', 'w', encoding='utf-8') as f:
+            f.write(text)
+        
+        # Run Vale command to lint the temporary file
+        result = subprocess.run(['vale', '--output', 'JSON', 'temp.txt'], capture_output=True, text=True)
+        
+        # Check if Vale returned valid JSON output
+        if result.stdout.strip():  # Check if output is not empty
+            try:
+                output_json = json.loads(result.stdout)
+                subjective_terms = []
+                for issue in output_json['issues']:
+                    if 'message' in issue:
+                        subjective_terms.append(issue['message'])
+                return subjective_terms
+            except json.JSONDecodeError as e:
+                print(f"Error parsing JSON from Vale output: {e}")
+                return []
+        else:
+            print("No issues found by Vale.")
+            return []
+    elif pd.isnull(text):  # Check for NaN
+        return []  # Return an empty list if NaN
+    else:
+        return []  # Handle other non-string cases gracefully
+
+# Example usage with DataFrame 'df' containing 'TextEntry' column
+def main():
+    df = pd.read_csv('/Users/Sophia/Desktop/Datasets/AIXperience/clean_data.csv')  
+    
+    biased_term_counter = Counter()
+    for description in df['TextEntry']:
+        terms = preprocess_text_with_vale(description)
+        biased_term_counter.update(terms)
+    
+    # Print biased or subjective terms and their frequencies
+    print("Biased or subjective terms and their frequencies:")
+    print(biased_term_counter.most_common())
+
+if __name__ == "__main__":
+    main()
