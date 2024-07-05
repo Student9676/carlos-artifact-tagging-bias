@@ -1,1 +1,47 @@
+import os
+import pandas as pd
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+from collections import Counter
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud  # Ensure this import is correct
 
+# Download required NLTK data
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+
+# Load your dataset
+df = pd.read_csv('/Users/Sophia/Desktop/Datasets/AIXperience/clean_data.csv')
+
+# Select the column with descriptions
+descriptions = df['TextEntry'].dropna().tolist()
+
+# Preprocess the text
+def preprocess(text):
+    tokens = word_tokenize(text)
+    tokens = [token.lower() for token in tokens]
+    tokens = [token for token in tokens if token.isalpha()]
+    stop_words = set(stopwords.words('english'))
+    tokens = [token for token in tokens if token not in stop_words]
+    lemmatizer = WordNetLemmatizer()
+    tokens = [lemmatizer.lemmatize(token) for token in tokens]
+    return tokens
+
+# Apply preprocessing to all descriptions
+preprocessed_descriptions = [preprocess(description) for description in descriptions]
+all_words = [word for description in preprocessed_descriptions for word in description]
+
+# Calculate word frequencies
+word_freq = Counter(all_words)
+
+# Generate a word cloud image
+wordcloud = WordCloud(width=800, height=400, background_color='white').generate_from_frequencies(word_freq)
+
+# Display the word cloud using matplotlib
+plt.figure(figsize=(10, 5))
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis('off')
+plt.show()
