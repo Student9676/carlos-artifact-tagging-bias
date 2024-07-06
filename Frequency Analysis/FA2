@@ -1,0 +1,3 @@
+# The basic idea of this program is to perform frequency analysis on the text entries in the data obtained from the original cleaning process.
+# For the top 200 words with the highest frequency, we will perform sentiment analysis. Based on their scores in subjectivity and sentiment, we will determine whether they are biased or not.
+
