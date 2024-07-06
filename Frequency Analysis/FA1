@@ -1,0 +1,74 @@
+import pandas as pd
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from collections import Counter
+import matplotlib.pyplot as plt
+import re
+from nltk.corpus import wordnet as wn
+
+# Download necessary NLTK resources
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('wordnet')
+
+# Read the Excel file (Data obtained from sentiment analysis)
+file_path = 'C:/Users/LC180/Desktop/AI.XPERIENCE/Worth_Analysis_TextEntries.xlsx'
+Sentiment_ana_result = pd.read_excel(file_path)
+
+# Extract the target column
+text_data = Sentiment_ana_result['TextEntry']
+
+# Combine all text entries into a single string
+combined_text = " ".join(text_data)
+
+# Get the stop words from NLTK
+stop_words = set(stopwords.words('english'))
+
+# Function to preprocess text using the NLTK stop words list
+def preprocess_text_nltk(text):
+    text = text.lower()
+    text = re.sub(r'[^a-z\s]', '', text)
+    words = word_tokenize(text)
+    filtered_words = [word for word in words if word not in stop_words]
+    return filtered_words
+
+# Apply the preprocessing function to the text entries
+Sentiment_ana_result['Processed_Text'] = Sentiment_ana_result['TextEntry'].apply(preprocess_text_nltk)
+
+# Flatten the list of tokens and calculate word frequencies
+all_tokens = [token for sublist in Sentiment_ana_result['Processed_Text'] for token in sublist]
+word_freq = Counter(all_tokens)
+
+# Display the most common words
+most_common_words = word_freq.most_common(200)  # Get the top 200 common words
+print(most_common_words)
+
+# Function to filter sentiment-laden words using part-of-speech tagging
+def is_sentiment_word(word):
+    synsets = wn.synsets(word)
+    if synsets:
+        pos = synsets[0].pos()
+        return pos in ['a', 's', 'r', 'v']  # Adjectives, Adverbs, Verbs
+    return False
+
+# Filter the most common words to keep only sentiment-laden words
+sentiment_words = most_common_words
+
+# Calculate the average sentiment and subjectivity for each word in the sentiment words list
+word_sentiment_subjectivity = []
+for word, freq in sentiment_words:
+    word_data = Sentiment_ana_result[Sentiment_ana_result['Processed_Text'].apply(lambda x: word in x)]
+    avg_sentiment = word_data['Sentiment_TextBlob'].mean()
+    avg_subjectivity = word_data['Subjectivity_TextBlob'].mean()
+    word_sentiment_subjectivity.append((word, avg_sentiment, avg_subjectivity, freq))
+
+# Convert to DataFrame for better visualization
+sentiment_subjectivity_df = pd.DataFrame(word_sentiment_subjectivity, columns=['Word', 'Avg_Sentiment', 'Avg_Subjectivity', 'Frequency'])
+print(sentiment_subjectivity_df)
+
+# Save the DataFrame to a CSV file
+output_file_path = 'C:/Users/LC180/Desktop/AI.XPERIENCE/BiasedWord.csv'
+sentiment_subjectivity_df.to_csv(output_file_path, index=False)
+
