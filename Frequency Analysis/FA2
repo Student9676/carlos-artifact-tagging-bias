@@ -1,18 +1,24 @@
 # The basic idea of this program is to perform frequency analysis on the text entries in the data obtained from the original cleaning process.
-# For the top 200 words with the highest frequency, we will perform sentiment analysis. Based on their scores in subjectivity and sentiment, we will determine whether they are biased or not.
+# For the top 300 words with the highest frequency, we will perform sentiment analysis. Based on their scores in subjectivity and sentiment, we will determine whether they are biased or not.
 
-# Prepare necessary packages
 import pandas as pd
 import nltk
 from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
+from nltk.tokenize import word_tokenize, sent_tokenize
 from collections import Counter
 import re
 from textblob import TextBlob
 
-# Read the Excel file (Clean data)
+# Download necessary NLTK resources
+nltk.download('stopwords')
+nltk.download('punkt')
+
+# Read the Excel file (Data obtained from sentiment analysis)
 file_path = 'C:/Users/LC180/Desktop/AI.XPERIENCE/Cleaned_data1.xlsx'
 targetFile = pd.read_excel(file_path)
+
+# Display the first few rows of the dataframe to confirm it has been read correctly
+print(targetFile.head())
 
 # Extract the target column and convert all entries to strings, handling NaN values
 text_data = targetFile['TextEntry'].astype(str).fillna('')
@@ -34,32 +40,42 @@ def preprocess_text_nltk(text):
 # Apply the preprocessing function to the text entries
 targetFile['Processed_Text'] = targetFile['TextEntry'].astype(str).fillna('').apply(preprocess_text_nltk)
 
+# Display the first few rows of the dataframe to confirm preprocessing
+print(targetFile[['TextEntry', 'Processed_Text']].head())
+
 # Flatten the list of tokens and calculate word frequencies
 all_tokens = [token for sublist in targetFile['Processed_Text'] for token in sublist]
 word_freq = Counter(all_tokens)
 
 # Display the most common words
-most_common_words = word_freq.most_common(300)
+most_common_words = word_freq.most_common(300)  # Get the top 300 common words
+print(most_common_words)
 
 # Calculate sentiment scores using TextBlob for the top 300 words
 def get_sentiment(text):
     blob = TextBlob(text)
     return blob.sentiment.polarity, blob.sentiment.subjectivity
 
+# Split text data into sentences
+sentences = [sentence for text in text_data for sentence in sent_tokenize(text)]
+
+# Calculate sentiment for each sentence once
+sentence_sentiments = {}
+for sentence in sentences:
+    sentiment, subjectivity = get_sentiment(sentence)
+    sentence_sentiments[sentence] = (sentiment, subjectivity)
+
+# Aggregate sentiment and subjectivity for each word in the top 300 words
 word_sentiment_subjectivity = []
 for word, freq in most_common_words:
-    avg_sentiment = 0
-    avg_subjectivity = 0
-    count = 0
-    for text in text_data:
-        if word in text:
-            sentiment, subjectivity = get_sentiment(text)
-            avg_sentiment += sentiment
-            avg_subjectivity += subjectivity
-            count += 1
-    if count > 0:
-        avg_sentiment /= count
-        avg_subjectivity /= count
+    sentiments = []
+    subjectivities = []
+    for sentence, (sentiment, subjectivity) in sentence_sentiments.items():
+        if word in sentence:
+            sentiments.append(sentiment)
+            subjectivities.append(subjectivity)
+    avg_sentiment = sum(sentiments) / len(sentiments) if sentiments else 0
+    avg_subjectivity = sum(subjectivities) / len(subjectivities) if subjectivities else 0
     word_sentiment_subjectivity.append((word, avg_sentiment, avg_subjectivity, freq))
 
 # Convert to DataFrame for better visualization
@@ -69,6 +85,3 @@ print(sentiment_subjectivity_df)
 # Save the DataFrame to an Excel file
 output_file_path = 'C:/Users/LC180/Desktop/AI.XPERIENCE/BiasedWord2.xlsx'
 sentiment_subjectivity_df.to_excel(output_file_path, index=False)
-
-
-
