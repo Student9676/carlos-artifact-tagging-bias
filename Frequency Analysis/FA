@@ -1,0 +1,69 @@
+import pandas as pd
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize, sent_tokenize
+from collections import Counter
+import re
+from textblob import TextBlob
+
+# Download necessary NLTK resources
+nltk.download('stopwords')
+nltk.download('punkt')
+
+# Read the CSV file (Data obtained from sentiment analysis)
+file_path = '/Users/Sophia/Desktop/Datasets/AIXperience/clean_data.csv'
+targetFile = pd.read_csv(file_path)
+
+# Display the first few rows of the dataframe to confirm it has been read correctly
+print(targetFile.head())
+
+# Extract the target column and convert all entries to strings, handling NaN values
+text_data = targetFile['TextEntry'].astype(str).fillna('')
+
+# Combine all text entries into a single string
+combined_text = " ".join(text_data)
+
+# Get the stop words from NLTK
+stop_words = set(stopwords.words('english'))
+
+# Function to preprocess text using the NLTK stop words list
+def preprocess_text_nltk(text):
+    text = text.lower()
+    text = re.sub(r'[^a-z\s]', '', text)
+    words = word_tokenize(text)
+    filtered_words = [word for word in words if word not in stop_words]
+    return filtered_words
+
+# Apply the preprocessing function to the text entries
+targetFile['Processed_Text'] = targetFile['TextEntry'].astype(str).fillna('').apply(preprocess_text_nltk)
+
+# Display the first few rows of the dataframe to confirm preprocessing
+print(targetFile[['TextEntry', 'Processed_Text']].head())
+
+# Flatten the list of tokens and calculate word frequencies
+all_tokens = [token for sublist in targetFile['Processed_Text'] for token in sublist]
+word_freq = Counter(all_tokens)
+
+# Display the most common words
+most_common_words = word_freq.most_common(300)  # Get the top 300 common words
+print(most_common_words)
+
+# Calculate total number of tokens
+total_tokens = sum(word_freq.values())
+
+# Calculate word frequencies as proportions
+word_proportions = {word: freq / total_tokens for word, freq in word_freq.items()}
+
+# Display the most common words with proportions
+most_common_words = word_freq.most_common(300)  # Get the top 300 common words
+most_common_words_with_proportions = [(word, freq, word_proportions[word]) for word, freq in most_common_words]
+
+print("Most common words with frequencies and proportions:")
+for word, freq, prop in most_common_words_with_proportions:
+    print(f"Word: {word}, Frequency: {freq}, Proportion: {prop:.4f}")
+
+# Split text data into sentences
+sentences = [sentence for text in text_data for sentence in sent_tokenize(text)]
+
+# Save to new file
+output_file_path = '/Users/Sophia/Desktop/Datasets/AIXperience/frequency_data.csv'
