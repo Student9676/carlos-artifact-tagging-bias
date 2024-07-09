@@ -1,1 +1,40 @@
+import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+
+# Load the data
+file_path = 'Data Frame Path'
+data = pd.read_excel(file_path)
+
+# Extract the 'TextEntry' column for N-gram analysis
+text_data = data['TextEntry'].dropna().tolist()
+
+# Create a CountVectorizer to count 3-grams (trigrams)
+vectorizer_trigram = CountVectorizer(ngram_range=(3, 3), stop_words='english')
+X_trigram = vectorizer_trigram.fit_transform(text_data)
+
+# Sum up the counts of each trigram
+sum_trigrams = X_trigram.sum(axis=0)
+
+# Get the trigram features (words)
+trigrams = vectorizer_trigram.get_feature_names_out()
+
+# Create a DataFrame with trigrams and their counts
+trigram_counts = pd.DataFrame(sum_trigrams, columns=trigrams).transpose().reset_index()
+trigram_counts.columns = ['Trigram', 'Count']
+
+# Sort by count in descending order
+trigram_counts_sorted = trigram_counts.sort_values(by='Count', ascending=False)
+
+# Display the top trigrams
+print(trigram_counts_sorted.head())
+
+# Define a list of potential biased phrases (for demonstration purposes, this list can be expanded)
+biased_phrases = ["specific biased phrase1", "specific biased phrase2", "specific biased phrase3"]
+
+# Filter the trigrams to identify potential biased phrases
+potential_biased_trigrams = trigram_counts_sorted[trigram_counts_sorted['Trigram'].str.contains('|'.join(biased_phrases), case=False)]
+
+# Display potential biased trigrams
+print(potential_biased_trigrams)
+
 
