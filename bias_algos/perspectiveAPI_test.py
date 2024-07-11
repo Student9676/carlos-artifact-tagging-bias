@@ -10,7 +10,7 @@ def file_exists(filename):
     return os.path.exists(file_path)
 
 
-API_KEY = 'AIzaSyDkOZuPRQhEyoN5thtyKUAKtGW2EBJaThA'
+API_KEY = 'see gdrive'
 
 client = discovery.build(
   "commentanalyzer",

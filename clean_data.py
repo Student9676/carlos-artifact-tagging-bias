@@ -51,7 +51,7 @@ final = final[["ObjectID", "Title", "TextEntry"]]
 
 print(final.head(20))
 
-final.to_excel("./carlos_data/objs_w_title_n_desc.xlsx", engine="xlsxwriter")
+final.to_excel("./carlos_data/clean_data.xlsx", engine="xlsxwriter")
 
 """
 print(obj_w_desc.head())
