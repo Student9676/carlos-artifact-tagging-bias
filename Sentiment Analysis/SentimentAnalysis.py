@@ -1,26 +1,36 @@
 import pandas as pd
+import re
 from textblob import TextBlob
 
-# Read the Excel file
-file_path = './carlos_data/objs_w_title_n_desc.xlsx'
-df = pd.read_excel(file_path)
+# Load the uploaded Excel file
+file_path = 'Path to file clean_data_annotated_v1.xlsx on your computer'
+data = pd.read_excel(file_path)
 
-# Extract the target text column
-target_texts = df['TextEntry'].astype(str).fillna('')
+# Function to preprocess text
+def preprocess_text(text):
+    if isinstance(text, str):
+        text = re.sub(r'[\n_x000D_]', ' ', text)
+        text = re.sub(r'\s+', ' ', text).strip()
+        return text
+    else:
+        return ""
 
-# Function to get sentiment and subjectivity
-def get_sentiment_subjectivity(text):
-    analysis = TextBlob(text)
-    return analysis.sentiment.polarity, analysis.sentiment.subjectivity
+# Function to calculate sentiment score using TextBlob
+def get_sentiment(text):
+    return TextBlob(text).sentiment.polarity
 
-# Apply the function to the target texts
-df[['Sentiment_TextBlob', 'Subjectivity_TextBlob']] = target_texts.apply(lambda text: pd.Series(get_sentiment_subjectivity(text)))
+# Apply preprocessing to TextEntry
+data['CleanText'] = data['TextEntry'].apply(preprocess_text)
 
-# Display the first few rows to confirm
-print(df.head())
+# Apply sentiment analysis to the cleaned text
+data['Sentiment'] = data['CleanText'].apply(get_sentiment)
 
-# Save the results to a new Excel file
-output_file_path = './carlos_data/objs_w_sentiment_analysis.xlsx'
-df.to_excel(output_file_path, index=False)
+# Select only the required columns for the output file
+output_data = data[['ObjectID', 'Title', 'Sentiment']]
 
-print(f"Sentiment analysis results saved to {output_file_path}")
+# Display the first few rows to show the results
+print(output_data.head())
+
+# Save the results to a new CSV file
+output_path = 'Path to your designated output file'
+output_data.to_csv(output_path, index=False)
