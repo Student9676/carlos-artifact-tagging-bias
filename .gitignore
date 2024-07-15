@@ -3,3 +3,5 @@
 .vscode
 carlos_data
 packages
+myenv
+bert/model
