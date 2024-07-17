@@ -4,14 +4,12 @@ import transformers, torch
 df = pd.read_csv('carlos_data/clean_data_annotated_v2.csv', encoding='latin1')
 df = df.head(101)
 
-print(df.head)
+print(df.head(3))
 
 descs = df['TextEntry'].tolist()
 bias_clas = df[['Subjective', 'Gender', 'Jargon', 'Social']].values
 
 print(descs[0])
-
-print(bias_clas)
 
 tokenizer = transformers.BertTokenizer.from_pretrained('bert-base-uncased')
 
@@ -40,10 +38,9 @@ dataloader = DataLoader(dataset, batch_size=16, shuffle=True)
 model = transformers.BertForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=4)
 model.train()
 
-from transformers import AdamW
 from torch.nn import BCEWithLogitsLoss
 
-optimizer = AdamW(model.parameters(), lr=1e-5)
+optimizer = torch.optim.AdamW(model.parameters(), lr=1e-5)
 loss_fn = BCEWithLogitsLoss()
 
 # Training loop
@@ -67,8 +64,8 @@ for epoch in range(epochs):
     
     print(f"Epoch {epoch + 1}, Loss: {total_loss / len(dataloader)}")
 
-model.save_pretrained('/Users/raasikh/Documents/Coding/ai.xperience/carlos-artifact-tagging-bias/bert/model')
-tokenizer.save_pretrained('/Users/raasikh/Documents/Coding/ai.xperience/carlos-artifact-tagging-bias/bert/model')
+model.save_pretrained('/home/raasikhk/Coding/ai.xperience/carlos-artifact-tagging-bias/bert/model')
+tokenizer.save_pretrained('/home/raasikhk/Coding/ai.xperience/carlos-artifact-tagging-bias/bert/model')
 
 # import transformers
 # model = transformers.BertForSequenceClassification.from_pretrained('bert/model')
