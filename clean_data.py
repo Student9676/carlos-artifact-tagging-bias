@@ -1,4 +1,8 @@
+# Cleans raw data from Carlos Museum
+# Format: ["ObjectID", "Title", "TextEntry"]
+
 import pandas as pd
+import re
 
 # Read from excel files
 objects = pd.read_csv("./carlos_data/ObjectTables/Objects.csv")
@@ -33,12 +37,16 @@ for index, group in grouped:
 
 	# for each row in the group of same object rows
 	for index, row in group.iterrows():
-		# compile string with all descriptions in chronological order
-		comp_desc = comp_desc + "\n\n" + str(row.iloc[2])
+		# compile string with all descriptions in reverse-chronological order
+		entry = str(row.iloc[2]).strip()
+
+		# # remove internal notes of less word count
+		# if len(re.findall(r'\w+', entry)) > 20: # if entry is 20 words or greater, keep it
+		comp_desc = entry + "\n\n" + comp_desc
 		comp_desc = comp_desc.strip()
 
 	# Store the compiled description in order, in an array
-	descriptions.append(comp_desc)
+	descriptions.append(comp_desc.strip())
 
 # Keep last row (latest update) of each group
 final = grouped.nth(-1)
@@ -51,7 +59,7 @@ final = final[["ObjectID", "Title", "TextEntry"]]
 
 print(final.head(20))
 
-final.to_excel("./carlos_data/clean_data.xlsx", engine="xlsxwriter")
+final.to_excel("./carlos_data/clean_data_v2.xlsx", engine="xlsxwriter", index=False)
 
 """
 print(obj_w_desc.head())
