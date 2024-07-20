@@ -45,10 +45,10 @@ def get_processed_data(with_labels):
 		annotated_data.at[index, "TextEntry"] = row["TextEntry"].strip()
 
 	# Fill na's in classification columns with zeros just incase an annotater left a cell empty
-	annotated_data["Subjective"] = annotated_data["Subjective"].fillna("")
-	annotated_data["Gender"] = annotated_data["Gender"].fillna("")
-	annotated_data["Jargon"] = annotated_data["Jargon"].fillna("")
-	annotated_data["Social"] = annotated_data["Social"].fillna("")
+	annotated_data["Subjective"] = annotated_data["Subjective"].fillna(0)
+	annotated_data["Gender"] = annotated_data["Gender"].fillna(0)
+	annotated_data["Jargon"] = annotated_data["Jargon"].fillna(0)
+	annotated_data["Social"] = annotated_data["Social"].fillna(0)
 
 	# Remove carriage returns
 	annotated_data = annotated_data.replace("_x000D_", "", regex=True)
