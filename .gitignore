@@ -4,5 +4,7 @@
 carlos_data
 packages
 myenv
-bert/model
+bert/model_v0
 notes.txt
+bert/models/model*/model
+*token*
