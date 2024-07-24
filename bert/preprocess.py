@@ -89,11 +89,9 @@ def get_processed_data(with_labels):
 	return annotated_data
 
 
-# print("RUNNING clean_data.py")
-# with open("clean_data.py") as cleaner:
-# 	exec(cleaner.read())
-# print("----------\nFINISHED RUNNING clean_data.py\n")
-
-
+print("RUNNING clean_data.py")
+with open("clean_data.py") as cleaner:
+	exec(cleaner.read())
+print("----------\nFINISHED RUNNING clean_data.py\n")
 
 get_processed_data(with_labels=False).to_excel("carlos_data/preprocessed_data_v2.xlsx", engine="xlsxwriter", index=False)

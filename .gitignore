@@ -7,4 +7,5 @@ myenv
 bert/model_v0
 notes.txt
 bert/models/model*/model
+bert/models/model*/tokenizer
 *token*
