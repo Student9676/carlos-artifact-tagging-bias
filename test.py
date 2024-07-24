@@ -1,38 +1,26 @@
-import re
+import pandas as pd
 
-xcel_str = '''
-Catalogue entry:
-See object file for catalogue entry essay by RSM.
+annotations_raw_2 = pd.read_excel("carlos_data/clean_data_annotated_shuffled_v3.xlsx", index_col=0)
+annotations_raw_2 = annotations_raw_2.filter(["ObjectID", "Subjective", "Gender", "Jargon", "Social"])
 
-"Comments on authenticity, quality, and glyphs":
-"It is authentic. Needs to be exhibited, perhaps in a series w/other bowls. It is well painted, had a good finish. Due to burial, acid or salt eats away surface. Notice the ABACA...etc. design. Star"" (four dots). ""Bah"" means gopher. ""Lamat"" (Venus) appears also."""
+exclude_1 = range(300, 401)
+exclude_2 = range(800, 901)
 
-Comments on glyphs:
-"Same analysis here as with 1990.11.81:  scribal play; artist knows what it should be like; uses pedestal glyph (?); glyphs before/ God N glyph=her its comes;"" complex repeat: abcabcbdebcbcbcfg (head/ba)b.""  RSM coins=a pseudo sentence not a pseudo glyph.    RJ: d=2 round dots over pop (mat); g=animal; also lamat (Venus)"""
+# Filter the DataFrame to remove lina's annotations
+annotations_clean_2 = annotations_raw_2[~annotations_raw_2.index.isin(list(exclude_1) + list(exclude_2))]
 
-Comment on text and future interpretation:
-"Both (1990.011.91 also) come from the same area; Lowland. If can draw out text, Dorie will look at further and try to translate; could invite student/young epigraphers in to read and interpret. Or--send photographs?"
+# Keep rows 1-1000, excluding whats mentioned above
+annotations_clean_2 = annotations_clean_2.loc[1:1000]
 
-Use for fixed compensation paid regularly to employees for ongoing work or services, on the basis of periods longer than days. For such compensation paid on an hourly, daily, or piecework basis, use "wages."
+raw = pd.read_excel("carlos_data/clean_data_v2.xlsx")
+raw = raw.filter(["ObjectID", "Title", "TextEntry"])
 
-May 1993 related term added. February 1993 descriptor moved.
+# keep only objects in raw that are present in annotated shuffled data using objectid
+filtered_raw = raw[raw['ObjectID'].isin(annotations_clean_2['ObjectID'])]
 
-location verified, inventory 2001.  Turner inventory, April 2004.  Location verified, inventory 9, Winter 2005.
+# Reset index for both dataframes
+filtered_raw.reset_index(drop=True, inplace=True)
+annotations_clean_2.reset_index(drop=True, inplace=True)
 
-Purchase date and method taken from lists attached to donor tax forms (see accession lot).  Source taken from handwritten receipt found in donor files (see accession lot).
-'''
-
-str = '''
-Hello
-"This is a ""good"" example of ""work"""
-Testing
-"Hello"
-'''
-
-new_str = str.replace('""', "'")
-
-pattern = r'"(.*?)"'
-
-matches = re.findall(pattern, new_str)
-
-print(matches)
+# Merge both dataframes on 'ObjectID'
+merged_df = pd.merge(filtered_raw, annotations_clean_2, on='ObjectID', how='inner')
