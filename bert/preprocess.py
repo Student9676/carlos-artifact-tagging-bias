@@ -29,19 +29,13 @@ def get_processed_data(with_labels):
 	# Join titles and labels with annotations
 	annotated_data_1 = clean.join(annotations_clean)
 
-	#-------------------------V3 ANNOTATIONS-------------------------
+	#-------------------------V3 ANNOTATIONS START-------------------------
 
-	annotations_raw_2 = pd.read_excel("carlos_data/clean_data_annotated_shuffled_v3.xlsx", index_col=0)
+	annotations_raw_2 = pd.read_excel("carlos_data/clean_data_annotated_shuffled_v3_double_checked.xlsx", index_col=0)
 	annotations_raw_2 = annotations_raw_2.filter(["ObjectID", "Subjective", "Gender", "Jargon", "Social"])
 
-	exclude_1 = range(300, 401)
-	exclude_2 = range(800, 901)
-
-	# Filter the DataFrame to remove lina's annotations
-	annotations_clean_2 = annotations_raw_2[~annotations_raw_2.index.isin(list(exclude_1) + list(exclude_2))]
-
-	# Keep rows 1-1000, excluding whats mentioned above
-	annotations_clean_2 = annotations_clean_2.loc[1:1000]
+	# Keep rows 0-1000 
+	annotations_clean_2 = annotations_raw_2.loc[0:1001]
 
 	raw = pd.read_excel("carlos_data/clean_data_v2.xlsx")
 	raw = raw.filter(["ObjectID", "Title", "TextEntry"])
@@ -58,7 +52,7 @@ def get_processed_data(with_labels):
 	
 	annotated_data = pd.concat([annotated_data_1, annotated_data_2], ignore_index=True)
 
-	#----------------------------V3 ANNOTATIONS---------------------------------
+	#----------------------------V3 ANNOTATIONS END---------------------------------
 
 	# Remove rows with empty descriptions
 	# annotated_data = annotated_data.dropna(subset=["TextEntry"])
@@ -94,4 +88,4 @@ with open("clean_data.py") as cleaner:
 	exec(cleaner.read())
 print("----------\nFINISHED RUNNING clean_data.py\n")
 
-get_processed_data(with_labels=False).to_excel("carlos_data/preprocessed_data_v2.xlsx", engine="xlsxwriter", index=False)
+get_processed_data(with_labels=False).to_excel("carlos_data/preprocessed_data_v3.xlsx", engine="xlsxwriter", index=False)
