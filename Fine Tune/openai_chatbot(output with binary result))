@@ -1,0 +1,95 @@
+import openai
+import datetime
+
+def get_api_key():
+    # Directly return the API key
+    return "Enter your api key"
+
+def chat_completions(api_key, messages, model_id):
+    openai.api_key = api_key
+    BASE_URL = "https://api.openai.com/v1"
+    openai.api_base = BASE_URL
+
+    try:
+        response = openai.ChatCompletion.create(
+            model=model_id,
+            messages=messages
+        )
+        response_text = response.choices[0].message['content']
+        print(response_text)  # Print the response for debugging
+        return response_text
+    except Exception as e:
+        print(f"Error: {e}")
+        return "Sorry, an error occurred while processing your request."
+
+def convert_bias_labels(bias_labels):
+    # Define the order of the biases
+    biases = ["subjectivity bias", "gender bias", "jargon bias", "social bias"]
+
+    # Create a dictionary to store the binary representation of each bias
+    bias_dict = {bias: 0 for bias in biases}
+
+    # Update the dictionary based on the provided bias labels
+    for label in bias_labels:
+        label = label.strip().lower()
+        if label in bias_dict:
+            bias_dict[label] = 1
+
+    # Convert the dictionary values to the desired format
+    result = " - ".join(str(bias_dict[bias]) for bias in biases)
+
+    return result
+
+def extract_bias_labels(response_text):
+    # Initialize a list to hold detected bias types
+    bias_labels = []
+
+    # Check for each type of bias in the response text
+    if "subjectivity bias" in response_text.lower():
+        bias_labels.append("subjectivity bias")
+    if "gender bias" in response_text.lower():
+        bias_labels.append("gender bias")
+    if "jargon bias" in response_text.lower():
+        bias_labels.append("jargon bias")
+    if "social bias" in response_text.lower():
+        bias_labels.append("social bias")
+
+    return bias_labels
+
+def main():
+    api_key = get_api_key()
+    if not api_key:
+        print("API key not found.")
+        return
+
+    model_id = "ft:gpt-3.5-turbo-1106:emory-center-for-ai-learning:bd2300:9qmS1lyX"
+    messages = [{"role": "system", "content": "You are a helpful assistant."}]
+
+    print("Welcome to the chat! Type 'exit' to end the conversation.")
+    while True:
+        user_query = input("User: ")
+        if user_query.lower() == 'exit':
+            current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            print(f"Exiting the chat. Local time: {current_time}")
+            current_hour = datetime.datetime.now().hour
+            if current_hour < 12:
+                print("Goodbye! Have a great morning!")
+            elif current_hour < 18:
+                print("Goodbye! Enjoy your afternoon!")
+            else:
+                print("Goodbye! Have a pleasant evening!")
+            break
+
+        messages.append({"role": "user", "content": user_query})
+        response = chat_completions(api_key, messages, model_id)
+        messages.append({"role": "assistant", "content": response})
+
+        # Extract bias labels from response
+        bias_labels = extract_bias_labels(response)
+        binary_result = convert_bias_labels(bias_labels)
+
+        print(f"Binary result: {binary_result}")
+        print()  # Add a blank line between each conversation turn
+
+if __name__ == "__main__":
+    main()
