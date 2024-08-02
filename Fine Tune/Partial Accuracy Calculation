@@ -1,0 +1,38 @@
+import pandas as pd
+
+# Load the files
+bert_results = pd.read_excel('C:/Users/LC180/Desktop/bert_v2_2_test_data.xlsx')
+my_model_results = pd.read_excel('C:/Users/LC180/Desktop/processed_output 下午11.26.49.xlsx')
+
+# Extract the binary results from the 'Binary_Result' column in the second DataFrame
+my_model_results[['Subjective', 'Gender', 'Jargon', 'Social']] = my_model_results['Binary_Result'].str.split(' - ', expand=True).astype(int)
+
+# Convert BERT results to the same binary result format
+bert_results['Binary_Result'] = bert_results.apply(
+    lambda row: f"{row['Subjective']} - {row['Gender']} - {row['Jargon']} - {row['Social']}", axis=1
+)
+
+# Extract individual columns for comparison
+bert_subjective = bert_results['Subjective']
+bert_gender = bert_results['Gender']
+bert_jargon = bert_results['Jargon']
+bert_social = bert_results['Social']
+
+model_subjective = my_model_results['Subjective']
+model_gender = my_model_results['Gender']
+model_jargon = my_model_results['Jargon']
+model_social = my_model_results['Social']
+
+# Calculate partial accuracy for each row
+partial_accuracies = (
+    (bert_subjective == model_subjective).astype(int) +
+    (bert_gender == model_gender).astype(int) +
+    (bert_jargon == model_jargon).astype(int) +
+    (bert_social == model_social).astype(int)
+) / 4
+
+# Calculate overall partial accuracy
+overall_partial_accuracy = partial_accuracies.mean()
+
+# Display the result
+print(f"Overall Partial Accuracy: {overall_partial_accuracy:.4f}")
