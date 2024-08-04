@@ -12,6 +12,10 @@ bert_results['Binary_Result'] = bert_results.apply(
     lambda row: f"{row['Subjective']} - {row['Gender']} - {row['Jargon']} - {row['Social']}", axis=1
 )
 
+# Ensure both DataFrames have the same index
+bert_results = bert_results.reset_index(drop=True)
+my_model_results = my_model_results.reset_index(drop=True)
+
 # Extract individual columns for comparison
 bert_subjective = bert_results['Subjective']
 bert_gender = bert_results['Gender']
