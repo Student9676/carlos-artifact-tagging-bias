@@ -1,0 +1,99 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Define file paths for each continent
+file_paths = {
+    "Africa": "File_path",
+    "Asia": "File_path",
+    "Europe": "File_path",
+    "North America": "File_path",
+    "Oceania": "File_path",
+    "South America": "File_path"
+}
+
+# Initialize lists to store proportions and counts
+continents = []
+subjective_proportions = []
+gender_proportions = []
+jargon_proportions = []
+social_proportions = []
+
+subjective_counts = []
+gender_counts = []
+jargon_counts = []
+social_counts = []
+
+# Process each continent's data
+for continent, file_path in file_paths.items():
+    # Load the Excel file
+    df = pd.read_excel(file_path)
+
+    # Calculate the total number of rows (entries)
+    total_rows = len(df)
+
+    # Calculate the sum of each bias type
+    subjective_sum = df['Subjective'].sum()
+    gender_sum = df['Gender'].sum()
+    jargon_sum = df['Jargon'].sum()
+    social_sum = df['Social'].sum()
+
+    # Calculate the proportion of each bias type
+    subjective_proportion = subjective_sum / total_rows
+    gender_proportion = gender_sum / total_rows
+    jargon_proportion = jargon_sum / total_rows
+    social_proportion = social_sum / total_rows
+
+    # Store results
+    continents.append(continent)
+    subjective_proportions.append(subjective_proportion)
+    gender_proportions.append(gender_proportion)
+    jargon_proportions.append(jargon_proportion)
+    social_proportions.append(social_proportion)
+
+    subjective_counts.append(subjective_sum)
+    gender_counts.append(gender_sum)
+    jargon_counts.append(jargon_sum)
+    social_counts.append(social_sum)
+
+    # Print the exact numbers and proportions
+    print(f"{continent}:\n")
+    print(f"  Total Entries: {total_rows}")
+    print(f"  Subjective Bias: {subjective_sum} ({subjective_proportion:.2%})")
+    print(f"  Gender Bias: {gender_sum} ({gender_proportion:.2%})")
+    print(f"  Jargon Bias: {jargon_sum} ({jargon_proportion:.2%})")
+    print(f"  Social Bias: {social_sum} ({social_proportion:.2%})\n")
+
+# Plotting the bar chart for proportions
+width = 0.2
+values = np.arange(len(continents))
+
+plt.figure(figsize=(12, 6))  
+plt.bar(values, subjective_proportions, width, label="Subjective", color="#dc7633")
+plt.bar(values + width, gender_proportions, width, label="Gender", color="#f4d03f")
+plt.bar(values + width * 2, jargon_proportions, width, label="Jargon", color="#52be80")
+plt.bar(values + width * 3, social_proportions, width, label="Social", color="#5dade2")
+
+plt.xlabel("Continent")
+plt.ylabel("Proportion")
+plt.title("Proportion of Bias Across Continents")
+plt.legend()
+plt.xticks(values + width * 1.5, continents, rotation=45)  # Rotate labels for better readability
+plt.ylim(0, 1)  # Set y-axis limits to 0-1 for proportion scale
+plt.tight_layout()  # Adjust layout to prevent clipping of labels
+plt.show()
+
+# Plotting the bar chart for counts
+plt.figure(figsize=(12, 6))  # Set figure size for better readability
+plt.bar(values, subjective_counts, width, label="Subjective", color="#dc7633")
+plt.bar(values + width, gender_counts, width, label="Gender", color="#f4d03f")
+plt.bar(values + width * 2, jargon_counts, width, label="Jargon", color="#52be80")
+plt.bar(values + width * 3, social_counts, width, label="Social", color="#5dade2")
+
+plt.xlabel("Continent")
+plt.ylabel("Count")
+plt.title("Count of Bias Across Continents")
+plt.legend()
+plt.xticks(values + width * 1.5, continents, rotation=45)  # Rotate labels for better readability
+plt.tight_layout()  # Adjust layout to prevent clipping of labels
+plt.show()
