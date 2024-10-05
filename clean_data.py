@@ -59,15 +59,4 @@ final = final[["ObjectID", "Title", "TextEntry"]]
 
 print(final.head(20))
 
-final.to_excel("./carlos_data/clean_data_v2.xlsx", engine="xlsxwriter", index=False)
-
-"""
-print(obj_w_desc.head())
-
-# Convert back to normal DataFrame type (cant find better way for DataFrameGroupBy[Scalar] -> DataFrame)
-
-# beautify
-grouped = grouped[["Title", "TextEntry"]] # removed medium
-# Write to excel file
-grouped.to_excel("obj_w_desc.xlsx", engine="xlsxwriter")
-"""
+final.to_excel("./carlos_data/clean_data.xlsx", engine="xlsxwriter", index=False)
