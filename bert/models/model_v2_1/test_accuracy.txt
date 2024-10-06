@@ -1,7 +1,0 @@
-Partial correct score: 
-532 / 640
-0.83125
-
-All correct score: 
-245 / 640
-0.3828125
