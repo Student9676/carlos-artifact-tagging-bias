@@ -33,25 +33,41 @@ Load data as csv files into a folder called `carlos_data` of the following forma
 *   Titles: `carlos_data/ObjectTables/ObjTitles.csv`
     *   COLUMNS: `["ObjectID", "Title"]`
 
-Run `prepare_for_annotation.py`
+Run `clean_data.py`
 
 ```
-python prepare_for_annotation.py
+python clean_data.py
 ```
 
-This will create a csv file called `clean_data.csv` in the folder you created of the following format:
+This will create a xlsx file called `clean_data.xlsx` in the folder you created of the following format:
 
 *   COLUMNS: `["ObjectID", "Title", "TextEntry", "Subjective", "Gender", "Jargon", "Social", "Subjective Label", "Gender Label", "Jargon Label", "Social Label"]`
 
-Final step is to get annotated data of the same format as `clean_data.csv` into the `carlos_data` folder called `annotated_data.csv`
+Final step is to get annotated data of the same format as `clean_data.xlsx` into the `carlos_data` folder called `annotated_data.xlsx`
 
 ## BERT Fine-tuning and Testing
 
-All code is present in the `bert/model/bert.ipynb Jupyter notebook.`
+All fine-tuning code is present in the `bert/model/bert.ipynb Jupyter notebook.`
+
+### Data Preprocessing
+
+Run `bert/preprocess.py` to preprocess the annotated data
+
+```
+python bert/preprocess.py
+```
 
 ### Training
 
 Preprocess the data, generate analytics, train the model, pull model from HuggingFace (skip if you fine-tuned yourself -- fine-tuned version is available on HuggingFace for easier testing), test the model, and generate metrics by following the code blocks in order.
+
+#### Logs
+
+Use tensorboard to see the notebook's produced logs and our (provided) logs.
+ 
+```
+tensorboard --logdir bert/logs
+```
 
 ### Testing
 
