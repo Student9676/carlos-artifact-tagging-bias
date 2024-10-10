@@ -22,16 +22,18 @@ Install the required dependencies:
 pip install -r requirements.txt
 ```
 
+We use **Python 3.11.9** but other recent versions most likely work (we have not tested them).
+
 ## Data Cleaning
 
 Load data as csv files into a folder called `carlos_data` of the following format:  
 
-*   Objects: `carlos_data/ObjectTables/Objects.csv`
-    *   COLUMNS: `["ID", "TextEntry", "EnteredDate"]`
-*   Descriptions: `carlos_data/ObjectTables/TextEntries.csv`
-    *   COLUMNS: `["ObjectID", "Medium"]`
-*   Titles: `carlos_data/ObjectTables/ObjTitles.csv`
-    *   COLUMNS: `["ObjectID", "Title"]`
+* Objects: `carlos_data/ObjectTables/Objects.csv`
+  * COLUMNS: `["ID", "TextEntry", "EnteredDate"]`
+* Descriptions: `carlos_data/ObjectTables/TextEntries.csv`
+  * COLUMNS: `["ObjectID", "Medium"]`
+* Titles: `carlos_data/ObjectTables/ObjTitles.csv`
+  * COLUMNS: `["ObjectID", "Title"]`
 
 Run `clean_data.py`
 
@@ -39,49 +41,52 @@ Run `clean_data.py`
 python clean_data.py
 ```
 
-This will create a xlsx file called `clean_data.xlsx` in the folder you created of the following format:
+This will create a csv file called `clean_data.csv` in the folder you created of the following format:
 
-*   COLUMNS: `["ObjectID", "Title", "TextEntry", "Subjective", "Gender", "Jargon", "Social", "Subjective Label", "Gender Label", "Jargon Label", "Social Label"]`
+* COLUMNS: `["", """ObjectID", "Title", "TextEntry", "Subjective", "Gender", "Jargon", "Social", "Subjective Label", "Gender Label", "Jargon Label", "Social Label"]`
 
-Final step is to get annotated data of the same format as `clean_data.xlsx` into the `carlos_data` folder called `annotated_data.xlsx`
+The unnamed column (the first one) has indices that match up with Excel's indices if the csv is opened there. This is to help keep track of annotations. 
+
+The final step is to get annotated data of the same format as `clean_data.csv` into the `carlos_data` folder called annotated_data.csv i.e. an edited version with annotations of `clean_data.csv`.
 
 ## BERT Fine-tuning and Testing
 
-All fine-tuning code is present in the `bert/model/bert.ipynb Jupyter notebook.`
+All fine-tuning code is present in the `bert/model/bert.ipynb` Jupyter notebook.
 
 ### Data Preprocessing
 
-Run `bert/preprocess.py` to preprocess the annotated data
+Edit `bert/preprocess.py` and change the variable `num_annotated` to the number of rows you annotated (assuming the first n rows excluding the titles row are annotated data). **Project members:** set `annotated = "default"` if you have our annotated data. Then run this file to get preprocessed data called `preprocessed_data.csv`
 
 ```
+# Assuming you have edited the script's num_annotated variable
 python bert/preprocess.py
 ```
 
 ### Training
 
-Preprocess the data, generate analytics, train the model, pull model from HuggingFace (skip if you fine-tuned yourself -- fine-tuned version is available on HuggingFace for easier testing), test the model, and generate metrics by following the code blocks in order.
+Preprocess the data, generate analytics, train the model, pull model from HuggingFace (skip if you fine-tuned yourself -- fine-tuned version is available on HuggingFace for quicker testing), test the model, and generate metrics by following the code blocks in order. Headings are present as dividers for organization.
 
 #### Logs
 
 Use tensorboard to see the notebook's produced logs and our (provided) logs.
- 
+
 ```
 tensorboard --logdir bert/logs
 ```
 
 ### Testing
 
-Scroll to the end of the notebook to find the testing code where the model is pulled directly from a HuggingFace repository.
+Scroll to the end of the notebook to find the testing section where the model can be tested and metrics are calculated.
 
 ## Additional Information
 
-Our paper is not yet published and can be found [here](https://drive.google.com/file/d/1BwXwciVGM6w-nuZKwceYzyzuNmEPcq1s/view?usp=sharing). Our HuggingFace model repository can be found [here](https://huggingface.co/raasikhk/carlos_bert_v2_2).
+Our paper is not yet published but can be found [here](https://drive.google.com/file/d/1BwXwciVGM6w-nuZKwceYzyzuNmEPcq1s/view?usp=sharing). Our HuggingFace model repository can be found [here](https://huggingface.co/raasikhk/carlos_bert_v2_2).
 
 ## Contributors
 
-*   **Raasikh Kanjiani**
-*   **Lina Li**
-*   **Chang Liu**
-*   **Jessie Ni**
-*   **Jaroy Wei**
-*   **Sophia Yoon**
+* **Raasikh Kanjiani**
+* **Lina Li**
+* **Chang Liu**
+* **Jessie Ni**
+* **Jaroy Wei**
+* **Sophia Yoon**
