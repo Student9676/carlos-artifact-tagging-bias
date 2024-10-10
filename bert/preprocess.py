@@ -3,9 +3,22 @@
 
 import pandas as pd
 import regex as re
+import sys
+
+num_annotated = "default"
 
 # Get annotated data
-annotated_data = pd.read_excel("carlos_data/annotated_data.xlsx")
+annotated_data = pd.read_csv("carlos_data/annotated_data.csv")
+
+if num_annotated == "default":
+	annotated_data = annotated_data.iloc[0:1805-2] # -2 cuz of 2 starting index
+else:
+	try:
+		num_annotated = int(num_annotated)
+		annotated_data = annotated_data.iloc[0:num_annotated-2]
+	except ValueError:
+		print("ERROR: Set num_annotated to a valid number or 'default'")
+		sys.exit(1)
 
 # Replace all empty descriptions and titles with empty strings for internal processing (i.e. the step below)
 annotated_data["TextEntry"] = annotated_data["TextEntry"].fillna("")
@@ -99,6 +112,13 @@ annotated_data["Social"] = annotated_data["Social"].fillna(0)
 # Remove carriage returns
 annotated_data = annotated_data.replace("_x000D_", "", regex=True)
 
+# Sync index column with excel indices
+annotated_data.index = range(2, 2 + len(annotated_data))
+
+if "Unnamed: 0" in annotated_data.columns:
+    annotated_data = annotated_data.drop(columns=["Unnamed: 0"])
+
+
 print(annotated_data.head(20))
 print(annotated_data.shape)
-annotated_data.to_excel("carlos_data/preprocessed_data.xlsx", engine="xlsxwriter", index=False)
+annotated_data.to_csv("carlos_data/preprocessed_data.csv", index=False)

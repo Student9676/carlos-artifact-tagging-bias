@@ -56,7 +56,9 @@ final["TextEntry"] = descriptions
 
 # Get relevant rows in order
 final = final[["ObjectID", "Title", "TextEntry"]]
+# Sync index column with excel indices
+final.index = range(2, 2 + len(final))
 
 print(final.head(20))
 
-final.to_excel("./carlos_data/clean_data.xlsx", engine="xlsxwriter", index=False)
+final.to_csv("./carlos_data/clean_data.csv")
