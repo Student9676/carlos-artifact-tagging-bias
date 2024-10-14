@@ -78,6 +78,19 @@ tensorboard --logdir bert/logs
 
 Scroll to the end of the notebook to find the testing section where the model can be tested and metrics are calculated.
 
+## ChatGPT Fine-tuning and Testing
+For data processing, we used a similar cleaning process as when preparing training data for BERT. Both ChatGPT and BERT fine-tuning utilized the same dataset, with the data formatted into JSONL for GPT fine-tuning.
+
+Due to limited resources, the GPT model was fine-tuned with a dataset of 288 entries. For more details on the training dataset, refer to the file "Training data."
+
+To test the fine-tuned model, run the Python script "GPT_Chatbox_MI." If you want to try custom input or output formatting, use the following files:
+- "openai_chatbot(output with binary result)"
+- "process_bias_detection_by_objectID.py"
+- process_bias_detection_by_rowNumber.py
+
+For accuracy testing results, see the "accuracy" folder.
+
+
 ## Additional Information
 
 Our paper is not yet published but can be found [here](https://drive.google.com/file/d/1BwXwciVGM6w-nuZKwceYzyzuNmEPcq1s/view?usp=sharing). Our HuggingFace model repository can be found [here](https://huggingface.co/raasikhk/carlos_bert_v2_2).
