@@ -84,11 +84,11 @@ For data processing, we used a similar cleaning process as when preparing traini
 Due to limited resources, the GPT model was fine-tuned with a dataset of 288 entries. For more details on the training dataset, refer to the file "Training data."
 
 To test the fine-tuned model, run the Python script "GPT_Chatbox_MI." If you want to try custom input or output formatting, use the following files:
-- "openai_chatbot(output with binary result)"
-- "process_bias_detection_by_objectID.py"
+- openai_chatbot(output with binary result)
+- process_bias_detection_by_objectID.py
 - process_bias_detection_by_rowNumber.py
 
-For accuracy testing results, see the "accuracy" folder.
+For accuracy testing methods, see the code in the "accuracy" folder.
 
 
 ## Additional Information
