@@ -8,7 +8,7 @@ import sys
 num_annotated = "default"
 
 # Get annotated data
-annotated_data = pd.read_csv("carlos_data/annotated_data.csv")
+annotated_data = pd.read_csv("carlos_data/annotated_data.csv", encoding='latin1')
 
 if num_annotated == "default":
 	annotated_data = annotated_data.iloc[0:1805-2] # -2 cuz of 2 starting index
@@ -121,4 +121,4 @@ if "Unnamed: 0" in annotated_data.columns:
 
 print(annotated_data.head(20))
 print(annotated_data.shape)
-annotated_data.to_csv("carlos_data/preprocessed_data.csv", index=False)
+annotated_data.to_csv("carlos_data/preprocessed_data.csv", index=False, encoding="utf-8")
