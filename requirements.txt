@@ -4,8 +4,11 @@ regex==2024.9.11
 openpyxl==3.1.5
 pysbd==0.3.4
 transformers==4.45.2
-torch==2.4.1
+torch==2.5.0
 scikit-learn==1.5.2
 datasets==3.0.1
 seaborn==0.13.2
 accelerate==1.0.0
+ipykernel==6.29.5
+torchvision==0.20.0
+torchaudio==2.5.0
