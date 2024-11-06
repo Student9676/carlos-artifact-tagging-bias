@@ -83,13 +83,18 @@ zip(descs, subjective_labels_array, gender_labels_array, jargon_labels_array, so
 			new_desc += sentence + " "
 		new_descs.append(new_desc)
 		continue
-	
+
+	prev_sentence = ""
 	for sentence in sentences:
 		for phrase in phrases:
 			if phrase.lower().replace('"', '') in sentence.lower().replace('"', ''):
-				new_desc += sentence + " "
+				if prev_sentence == sentence:
+					new_desc += sentence + " "
+				else:
+					new_desc += prev_sentence + " " + sentence + " "
 				# OPTIMIZATION if phrase size == sentence size then include n words surrounding it
 				phrases.remove(phrase)
+		prev_sentence = sentence
 	
 	if len(phrases) != 0:
 		for phrase in phrases:
@@ -119,6 +124,5 @@ if "Unnamed: 0" in annotated_data.columns:
     annotated_data = annotated_data.drop(columns=["Unnamed: 0"])
 
 
-print(annotated_data.head(20))
-print(annotated_data.shape)
+print(annotated_data)
 annotated_data.to_csv("carlos_data/preprocessed_data.csv", index=False, encoding="utf-8")
