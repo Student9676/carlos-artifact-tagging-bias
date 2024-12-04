@@ -5,9 +5,9 @@ import pandas as pd
 import re
 
 # Read from excel files
-objects = pd.read_csv("./carlos_data/ObjectTables/Objects.csv")
-descriptions = pd.read_csv("./carlos_data/ObjectTables/TextEntries.csv")
-titles = pd.read_csv("./carlos_data/ObjectTables/ObjTitles.csv")
+objects = pd.read_csv("./carlos_data/ObjectTables/Objects.csv", encoding="utf-8")
+descriptions = pd.read_csv("./carlos_data/ObjectTables/TextEntries.csv", encoding="utf-8")
+titles = pd.read_csv("./carlos_data/ObjectTables/ObjTitles.csv", encoding="utf-8")
 
 # Remove unwanted rows 
 descriptions = descriptions.filter(["ID", "TextEntry", "EnteredDate"])
@@ -61,4 +61,4 @@ final.index = range(2, 2 + len(final))
 
 print(final.head(20))
 
-final.to_csv("./carlos_data/clean_data.csv")
+final.to_csv("./carlos_data/clean_data.csv", encoding="utf-8")
