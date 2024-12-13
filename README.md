@@ -61,7 +61,16 @@ Edit `bert/preprocess.py` and change the variable `num_annotated` to the number 
 # Assuming you have edited the script's num_annotated variable
 python bert/preprocess.py
 ```
+Additionally, we have introduced an enhanced cleaning method to handle and preprocess text data effectively:
+- Text entries are split into individual sentences, allowing more granular analysis.
+- Each sentence retains its associated labels and metadata (e.g., `ANNOTATED?`, `ObjectID`).
+- Labels are standardized into consistent formats (e.g., lists for label fields) to ensure compatibility across downstream tasks.
 
+To use the enhanced cleaning:
+1. Ensure that your annotated data follows the same structure as provided in our sample dataset.
+2. Run the preprocessing script as follows to generate `sentence_level_preprocessed_data.csv` with sentence-level granularity:
+3. Make sure to change the file name in the BERT script as well if needed.
+   
 ### Training
 
 Preprocess the data, generate analytics, train the model, pull model from HuggingFace (skip if you fine-tuned yourself -- fine-tuned version is available on HuggingFace for quicker testing), test the model, and generate metrics by following the code blocks in order. Headings are present as dividers for organization.
