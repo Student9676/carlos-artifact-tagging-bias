@@ -61,7 +61,9 @@ Edit `bert/preprocess.py` and change the variable `num_annotated` to the number 
 # Assuming you have edited the script's num_annotated variable
 python bert/preprocess.py
 ```
-Additionally, we have introduced an enhanced cleaning method to handle and preprocess text data effectively:
+### Sentence-Level Preprocessing (Optional)
+
+Additionally, we have introduced a deeper cleaning method to handle and preprocess text data effectively. The file name is in `bert/sentence_preprocess.py`:
 - Text entries are split into individual sentences, allowing more granular analysis.
 - Each sentence retains its associated labels and metadata (e.g., `ANNOTATED?`, `ObjectID`).
 - Labels are standardized into consistent formats (e.g., lists for label fields) to ensure compatibility across downstream tasks.
