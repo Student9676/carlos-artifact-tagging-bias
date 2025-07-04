@@ -4,6 +4,8 @@ import Debiaser from './pages/Debiaser';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 
+import './index.css';
+
 function App() {
   return (
     <BrowserRouter>

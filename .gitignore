@@ -9,3 +9,4 @@ notes.txt
 bert/models/model*/model
 bert/models/model*/tokenizer
 *token*
+.env
