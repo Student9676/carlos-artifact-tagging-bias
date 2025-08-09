@@ -1,4 +1,4 @@
-import Header from '../components/Header';
+import Header from "../components/Header";
 
 export default function Home() {
   return (
@@ -26,11 +26,11 @@ export default function Home() {
         {/* Main content */}
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-white text-5xl font-bold">Welcome to the Carlos Museum Lexicon Cleaner</h1>
+            <h1 className="text-white text-5xl">Welcome to the Carlos Museum's Lexicon Cleaner</h1>
             <p className="text-white text-lg mt-4">A one-stop solution for rewriting museum language for clarity and inclusivity.</p>
             <button
               className="mt-8 px-6 py-3 bg-white bg-opacity-10 backdrop-blur-md text-white text-lg font-semibold rounded-full shadow-lg border border-white border-opacity-20 hover:bg-opacity-20 transition-all duration-300"
-              onClick={() => window.location.href = '/debiaser'}
+              onClick={() => window.location.href = "/debiaser"}
             >
               Get Started
             </button>
