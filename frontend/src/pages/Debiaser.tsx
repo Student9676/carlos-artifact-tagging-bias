@@ -1,13 +1,16 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 
 export default function Debiaser() {
   const [inputText, setInputText] = useState('');
-  const [outputText, setOutputText] = useState('');
+  const navigate = useNavigate();
 
   const handleDebiasText = () => {
-    // Placeholder for debias functionality
-    setOutputText("Debiased text will appear here...");
+    if (!inputText.trim()) {
+      return;
+    }
+    navigate('/results', { state: { inputText } });
   };
 
   return (
@@ -31,7 +34,7 @@ export default function Debiaser() {
         <div className="flex-1 flex items-center justify-center p-10">
           <div className="w-full max-w-5xl">
             
-            <div className="text-center mb-20">
+            <div className="text-center mb-14">
                 <h1 className="text-white text-3xl">Lexicon Cleaner</h1>
                 <p className="text-white text-lg">
                 Enter text below to get a language analysis and an improved version.
@@ -52,10 +55,11 @@ export default function Debiaser() {
                 >
                     &gt;
                 </button>
-
             </div>
+
           </div>
         </div>
+
       </div>
     </div>
   );
