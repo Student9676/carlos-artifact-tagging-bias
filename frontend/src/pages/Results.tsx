@@ -38,12 +38,8 @@ export default function Results() {
             body: JSON.stringify({ text: inputText }),
             });
 
-            if (!response.ok) {
-            setDebiasedText(`API Error: ${response.status}`);
-            } else {
-                const data = await response.json();
-                setDebiasedText(JSON.stringify(data, null, 2));
-            }
+            const data = await response.json();
+            setDebiasedText(JSON.stringify(data, null, 2));
 
         } catch (error) {
             setDebiasedText(`Error processing text: ${error}. Please try again.`);
