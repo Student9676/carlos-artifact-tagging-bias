@@ -4,10 +4,13 @@ import torch
 tokenizer = None
 model = None
 pipe = None
+device = None
 
 def load_model():
+    global tokenizer, model, pipe, device
     device = 0 if torch.cuda.is_available() else -1
-    global tokenizer, model, pipe
+    if pipe is not None:
+        return
     tokenizer = AutoTokenizer.from_pretrained("raasikhk/carlos_bert_v2_2", revision="4f6590dd149a1cf31d0cc09fa6e2db13fdfc15f1")
     model = AutoModelForSequenceClassification.from_pretrained("raasikhk/carlos_bert_v2_2", revision="4f6590dd149a1cf31d0cc09fa6e2db13fdfc15f1", output_attentions=True)
     pipe = TextClassificationPipeline(model=model, tokenizer=tokenizer, top_k=None, truncation=True, padding=True, device=device)
@@ -26,6 +29,7 @@ def classify(text: str) -> dict:
         elif prediction["label"] == "Social":
             classification["social"] = prediction["score"]
 
+    print(f"Classification: {classification}")
     return classification
 
 def debias(text: str, classification: dict) -> str:

@@ -7,7 +7,14 @@ from .utils.debiaser import load_model, classify, debias
 
 @api_view(["GET"])
 def get_debiased_text(request):
-    return JsonResponse({"debiased_text": "example"})
+    text = "example"
+    load_model()
+    text_classification = classify(text)
+    debiased_text = debias(text, text_classification)
+    return JsonResponse({
+        "debiased_text": debiased_text,
+        "classification": text_classification
+    })
 
 @api_view(["POST"])
 def debias_text(request):
@@ -17,6 +24,7 @@ def debias_text(request):
         text_classification = classify(text)
         debiased_text = debias(text, text_classification)
     except Exception as e:
+        print(e)
         return JsonResponse({"error": str(e)}, status=500)
     return JsonResponse({
         "classification": text_classification,
