@@ -1,5 +1,11 @@
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, TextClassificationPipeline
 import torch
+import openai
+import os
+from dotenv import load_dotenv
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
 
 tokenizer = None
 model = None
@@ -35,15 +41,52 @@ def classify(text: str) -> dict:
 def debias(text: str, classification: dict) -> str:
     biases = []
     if classification.get("jargon", 0) > 0.5:
-        biases.append("jargon")
+        biases.append("jargon terms")
     if classification.get("subjective", 0) > 0.5:
-        biases.append("subjective")
+        biases.append("subjective language")
     if classification.get("gender", 0) > 0.5:
-        biases.append("gender")
+        biases.append("gender bias")
     if classification.get("social", 0) > 0.5:
-        biases.append("social")
-    
-    # Placeholder for debiasing logic
-    return "DEBIASED --> " + text
+        biases.append("social bias")
 
-    return text
+    biases_str = ""
+    if len(biases) == 2:
+        biases_str = f"{biases[0]} and {biases[1]}."
+    if len(biases) > 2:
+        for i, bias in enumerate(biases):
+            if i == len(biases) - 1:
+                biases_str += f"and {bias}."
+            else:
+                biases_str += f"{bias}, "
+
+    if not biases:
+        return text
+
+    if os.getenv("TEST") == "t":
+        return "DEBIASED --> "  + text
+
+    role_prompt = f"""
+    You are an expert artifact curator. You are tasked with removing specific 
+    biases and issues from a given text. The issues include {biases_str}.
+    Your goal is to rewrite the text to eliminate these issues with minimal changes
+    and preserve the original meaning.
+    """
+    prompt = f"""
+    The following text in quotes contains {biases_str}.
+    Please rewrite the text to remove these issues by 
+    making minimal changes and preserving the original meaning.
+
+    "{text}"
+    """
+
+    response = openai.chat.completions.create(
+        model="gpt-5-nano",
+        messages=[
+            {"role": "system", "content": role_prompt},
+            {"role": "user", "content": prompt}
+        ],
+    )
+
+    debiased_text = response.choices[0].message.content.strip()
+
+    return debiased_text
